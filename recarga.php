@@ -2,16 +2,17 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+// Habilitando erro 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 use \App\DingConnect\Recarga;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+
 $obRecarga = new Recarga();
-$auth = $obRecarga->autenticacao("14604a70-eecd-4070-862f-0501d1cc617f", "cTvBbGe3dCXNDzffYXBGgCXZWUhjnRx9Q7aYgDruWXs=");
-var_dump($auth);
+$auth = $obRecarga->autenticacao($_ENV['CLIENT_ID'], $_ENV['CLIENT_SECRET']);
 
-
-/*
-
-id:14604a70-eecd-4070-862f-0501d1cc617f
-secret:cTvBbGe3dCXNDzffYXBGgCXZWUhjnRx9Q7aYgDruWXs=
-
- */
+echo $auth;

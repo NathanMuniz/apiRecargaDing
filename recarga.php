@@ -14,13 +14,23 @@ $dotenv->load();
 
 
 
+
+
+
 $obRecarga = new Recarga();
+
 
 // Pedir TOken 
 $auth = $obRecarga->autenticacao($_ENV['CLIENT_ID'], $_ENV['CLIENT_SECRET']);
 
+$result = $obRecarga->pesquisaConta($auth['access_token'], "5511987301184");
+var_dump($result);
+//echo $auth["access_token"];
 
+/*
 // Testando Token 
 $regions = $obRecarga->getRegions($auth);
 
 var_dump($regions);
+
+ */

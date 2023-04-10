@@ -2,23 +2,44 @@
 
 namespace App\DingConnect;
 
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 class Recarga
 {
-
+  /**
+   *URL base da API 
+   *@var string 
+   */
   const BASE_URL = "https://api.dingconnect.com/";
 
+
+  /**
+   *Metodo para pegar token 
+   * @param string $clientID 
+   * @param string $clientSecret
+   * @return array 
+   */
   public function autenticacao($clientID, $clientSecret)
   {
-
+    // Chama função que faz request na api 
     return $this->getToken($clientID, $clientSecret);
   }
 
-
+  /**
+   *Metodo faz resquest na resorse para pegar token 
+   * @param string $client_id 
+   * @param string $clientSecret
+   * @return array     
+   */
   public function getToken($client_id, $client_secret)
   {
 
+
     $curl = curl_init();
 
+    // Configuração request ideal para pegar um token 
     curl_setopt_array($curl, array(
       CURLOPT_URL => "https://idp.ding.com/connect/token",
       CURLOPT_RETURNTRANSFER => true,
@@ -38,26 +59,35 @@ class Recarga
       ),
     ));
 
+    // Execulta o request 
     $response = curl_exec($curl);
 
-    echo $response;
+    // Response do request: token 
+    return json_decode($response, true);
   }
 
-  public function getRegions($token)
+  // api/V1/GetAccountLookup?accountNumber=<string>
+  // api/V1/GetAccountLookupaccountNumber=%2B5511987301184
+
+  public function pesquisaConta($token, $numero)
   {
 
-    $uri = "api/V1/GetRegions";
+    $params = ["accountNumber" => $numero];
 
-    return $this->get($uri, $token);
+    $uri = "api/V1/GetAccountLookup";
+
+    return $this->get($token, $uri, $params);
   }
 
 
 
 
-  public function get($uri, $token)
+  public function get($token, $uri, $params)
   {
 
-    $url = self::BASE_URL . $uri;
+    $queryParams = http_build_query($params);
+
+    $url = self::BASE_URL . $uri . $queryParams;
 
 
     $curl = curl_init();
@@ -71,7 +101,7 @@ class Recarga
       CURLOPT_TIMEOUT => 0,
       CURLOPT_FOLLOWLOCATION => true,
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-      CURLOPT_CUSTOMREQUEST => "POST",
+      CURLOPT_CUSTOMREQUEST => "GET",
       CURLOPT_HTTPHEADER => array(
         "Content-Type: application/json",
         "Authorization: Bearer $token"
@@ -80,6 +110,6 @@ class Recarga
 
     $response = curl_exec($curl);
 
-    echo $response;
+    echo json_decode($response, true);
   }
 }

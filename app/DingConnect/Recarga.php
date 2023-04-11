@@ -28,6 +28,41 @@ class Recarga
   }
 
   /**
+   * Busca alguams informações sobre o número
+   *@param string $token 
+   *@param string $numero
+   *@return array 
+   */
+  public function pesquisaConta($token, $numero)
+  {
+
+    $params = ["accountNumber" => $numero];
+
+    $uri = "api/V1/GetAccountLookup?accountNumber='$numero'";
+
+    return $this->get($token, $uri, $params);
+  }
+
+
+  /**
+   * Não entendi o que retorna
+   *@param string $token 
+   *@return array 
+   */
+  public function pegarBalanco($token)
+  {
+    $uri = "api/V1/GetBalance";
+
+    return $this->get($token, $uri);
+  }
+
+
+
+
+
+
+
+  /**
    *Metodo faz resquest na resorse para pegar token 
    * @param string $client_id 
    * @param string $clientSecret
@@ -58,7 +93,6 @@ class Recarga
         "Content-Type: application/x-www-form-urlencoded"
       ),
     ));
-
     // Execulta o request 
     $response = curl_exec($curl);
 
@@ -66,32 +100,15 @@ class Recarga
     return json_decode($response, true);
   }
 
-  // api/V1/GetAccountLookup?accountNumber=<string>
-  // api/V1/GetAccountLookupaccountNumber=%2B5511987301184
 
-  public function pesquisaConta($token, $numero)
+  public function get($token, $uri, $params = array())
   {
 
-    $params = ["accountNumber" => $numero];
+    //$queryParams = http_build_query($params);
 
-    $uri = "api/V1/GetAccountLookup";
-
-    return $this->get($token, $uri, $params);
-  }
-
-
-
-
-  public function get($token, $uri, $params)
-  {
-
-    $queryParams = http_build_query($params);
-
-    $url = self::BASE_URL . $uri . $queryParams;
-
+    $url = self::BASE_URL . $uri;
 
     $curl = curl_init();
-
 
     curl_setopt_array($curl, array(
       CURLOPT_URL => $url,
@@ -110,6 +127,8 @@ class Recarga
 
     $response = curl_exec($curl);
 
-    echo json_decode($response, true);
+    $response  = json_decode($response, true);
+
+    return $response;
   }
 }

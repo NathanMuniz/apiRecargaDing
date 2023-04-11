@@ -11,26 +11,20 @@ use \App\DingConnect\Recarga;
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-
-
-
-
-
-
 $obRecarga = new Recarga();
 
 
 // Pedir TOken 
 $auth = $obRecarga->autenticacao($_ENV['CLIENT_ID'], $_ENV['CLIENT_SECRET']);
 
+
+/*// Informações do número 
+
 $result = $obRecarga->pesquisaConta($auth['access_token'], "5511987301184");
 var_dump($result);
-//echo $auth["access_token"];
+echo '<br> País: ' . $result['CountryIso'] . ' Number: ' . $result['AccountNumberNormalized'];
+*/
 
-/*
-// Testando Token 
-$regions = $obRecarga->getRegions($auth);
 
-var_dump($regions);
-
- */
+$result = $obRecarga->pegarBalanco($auth['access_token']);
+var_dump($result);
